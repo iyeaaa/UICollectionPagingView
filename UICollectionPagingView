@@ -2,7 +2,7 @@
 import UIKit
 import Then
 
-class UIPagingCollectionView: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
+class UIPagingCollectionView: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource {
     var n: Int = 0
     var pageIndexBeforeDragging = 0
     var rowCount: Int { 1 }
@@ -19,8 +19,8 @@ class UIPagingCollectionView: UIView, UICollectionViewDelegate, UICollectionView
         $0.dataSource = self
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -69,8 +69,8 @@ class UIPagingCollectionView: UIView, UICollectionViewDelegate, UICollectionView
                 scrollView.layoutIfNeeded()
             }, completion: nil)
         } else {
-            guard pageIndexBeforeDragging - 1 >= 0 else { return }
-            guard pageIndexBeforeDragging + 1 <= lastPageIndex else { return }
+            if velocity.x < 0 && pageIndexBeforeDragging - 1 < 0 { return }
+            if velocity.x > 0 && pageIndexBeforeDragging + 1 > lastPageIndex { return }
             let indexPath = IndexPath(item: pageIndexAfterDragging*rowCount, section: 0)
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         }
